@@ -18,5 +18,5 @@ docker build -t shirasagi/mail .
 run these commands:
 
 ~~~bash
-docker run --name mail -d mail
+docker run --name mail -d shirasagi/mail
 ~~~
