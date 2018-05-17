@@ -1,0 +1,28 @@
+--- 90-quota.conf.orig	2013-04-17 22:59:47.000000000 +0900
++++ 90-quota.conf	2017-10-18 12:02:31.762633631 +0900
+@@ -15,13 +15,13 @@
+ # to give additional 100 MB when saving to Trash:
+ 
+ plugin {
+-  #quota_rule = *:storage=1G
+-  #quota_rule2 = Trash:storage=+100M
++  quota_rule = *:storage=1G
++  quota_rule2 = Trash:storage=+100M
+ 
+   # LDA/LMTP allows saving the last mail to bring user from under quota to
+   # over quota, if the quota doesn't grow too high. Default is to allow as
+   # long as quota will stay under 10% above the limit. Also allowed e.g. 10M.
+-  #quota_grace = 10%%
++  quota_grace = 10%%
+ }
+ 
+ ##
+@@ -65,7 +65,7 @@
+ 
+ plugin {
+   #quota = dirsize:User quota
+-  #quota = maildir:User quota
++  quota = maildir:User quota
+   #quota = dict:User quota::proxy::quota
+   #quota = fs:User quota
+ }

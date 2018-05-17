@@ -1,0 +1,11 @@
+--- auth-static.conf.ext.orig	2013-05-20 05:18:00.000000000 +0900
++++ auth-static.conf.ext	2017-10-17 20:28:20.423883735 +0900
+@@ -22,3 +22,8 @@
+ #  driver = static
+ #  args = uid=vmail gid=vmail home=/home/%u
+ #}
++
++userdb {
++  driver = static
++  args = uid=10000 gid=10000 home=/var/spool/virtual/%d/%n
++}

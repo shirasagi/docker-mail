@@ -1,0 +1,23 @@
+@@ -97,7 +97,7 @@
+ #   plain login digest-md5 cram-md5 ntlm rpa apop anonymous gssapi otp skey
+ #   gss-spnego
+ # NOTE: See also disable_plaintext_auth setting.
+-auth_mechanisms = plain
++auth_mechanisms = cram-md5
+ 
+ ##
+ ## Password and user databases
+@@ -119,10 +119,10 @@
+ #!include auth-deny.conf.ext
+ #!include auth-master.conf.ext
+ 
+-!include auth-system.conf.ext
++#!include auth-system.conf.ext
+ #!include auth-sql.conf.ext
+ #!include auth-ldap.conf.ext
+-#!include auth-passwdfile.conf.ext
++!include auth-passwdfile.conf.ext
+ #!include auth-checkpassword.conf.ext
+ #!include auth-vpopmail.conf.ext
+-#!include auth-static.conf.ext
++!include auth-static.conf.ext

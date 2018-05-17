@@ -1,0 +1,11 @@
+--- master.cf.orig	2014-06-10 10:39:23.000000000 +0900
++++ master.cf	2017-10-17 20:32:20.048020986 +0900
+@@ -13,7 +13,7 @@
+ #smtpd     pass  -       -       n       -       -       smtpd
+ #dnsblog   unix  -       -       n       -       0       dnsblog
+ #tlsproxy  unix  -       -       n       -       0       tlsproxy
+-#submission inet n       -       n       -       -       smtpd
++submission inet n       -       n       -       -       smtpd
+ #  -o syslog_name=postfix/submission
+ #  -o smtpd_tls_security_level=encrypt
+ #  -o smtpd_sasl_auth_enable=yes
