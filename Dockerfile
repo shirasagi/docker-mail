@@ -63,7 +63,7 @@ RUN patch /etc/dovecot/conf.d/auth-static.conf.ext < /tmp/auth-static.conf.ext.p
 ADD ./assets/dovecot/users /etc/dovecot/users
 
 # EXPOSE 25
-# EXPOSE 143
-# EXPOSE 587
+EXPOSE 143
+EXPOSE 587
 
 CMD /usr/sbin/postfix start && /usr/sbin/dovecot -F
