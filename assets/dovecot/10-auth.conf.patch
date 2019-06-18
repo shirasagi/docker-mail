@@ -1,3 +1,5 @@
+--- 10-auth.conf.orig	2018-05-17 09:09:18.000000000 +0000
++++ 10-auth.conf	2019-06-18 00:49:33.727401000 +0000
 @@ -97,7 +97,7 @@
  #   plain login digest-md5 cram-md5 ntlm rpa apop anonymous gssapi otp skey
  #   gss-spnego
@@ -19,5 +21,4 @@
 +!include auth-passwdfile.conf.ext
  #!include auth-checkpassword.conf.ext
  #!include auth-vpopmail.conf.ext
--#!include auth-static.conf.ext
-+!include auth-static.conf.ext
+ #!include auth-static.conf.ext

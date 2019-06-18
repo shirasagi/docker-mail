@@ -56,9 +56,9 @@ ADD ./assets/dovecot/90-quota.conf.patch /tmp/90-quota.conf.patch
 RUN cp -n /etc/dovecot/conf.d/90-quota.conf /etc/dovecot/conf.d/90-quota.conf.orig
 RUN patch /etc/dovecot/conf.d/90-quota.conf < /tmp/90-quota.conf.patch
 
-ADD ./assets/dovecot/auth-static.conf.ext.patch /tmp/auth-static.conf.ext.patch
-RUN cp -n /etc/dovecot/conf.d/auth-static.conf.ext /etc/dovecot/conf.d/auth-static.conf.ext.orig
-RUN patch /etc/dovecot/conf.d/auth-static.conf.ext < /tmp/auth-static.conf.ext.patch
+ADD ./assets/dovecot/auth-passwdfile.conf.ext.patch /tmp/auth-passwdfile.conf.ext.patch
+RUN cp -n /etc/dovecot/conf.d/auth-passwdfile.conf.ext /etc/dovecot/conf.d/auth-passwdfile.conf.ext.orig
+RUN patch /etc/dovecot/conf.d/auth-passwdfile.conf.ext < /tmp/auth-passwdfile.conf.ext.patch
 
 ADD ./assets/dovecot/users /etc/dovecot/users
 

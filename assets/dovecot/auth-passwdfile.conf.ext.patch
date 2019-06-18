@@ -1,0 +1,10 @@
+--- auth-passwdfile.conf.ext.orig	2019-06-18 01:00:48.622551000 +0000
++++ auth-passwdfile.conf.ext	2019-06-18 01:01:09.407663000 +0000
+@@ -14,6 +14,7 @@
+ 
+   # Default fields that can be overridden by passwd-file
+   #default_fields = quota_rule=*:storage=1G
++  default_fields = uid=mailuser gid=mailuser home=/var/spool/virtual/%d/%n
+ 
+   # Override fields from passwd-file
+   #override_fields = home=/home/virtual/%u

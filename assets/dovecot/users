@@ -1,7 +1,7 @@
-sys@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78
-admin@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78
-user1@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78
-user2@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78
-user3@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78
-user4@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78
-user5@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78
+sys@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78::::::
+admin@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78::::::
+user1@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78::::::
+user2@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78::::::
+user3@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78::::::
+user4@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78::::::
+user5@example.jp:{CRAM-MD5}ff5d74b19e3cb9b2b9f4fcb548fe023aeb44f67f231a5a89714d08b5fec22b78::::::
