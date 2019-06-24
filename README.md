@@ -35,7 +35,7 @@ docker run --name mail -d -p 10143:143 -p 10587:587 shirasagi/mail
 You can see dovecot configuration via below command:
 
 ~~~bash
-$ docker exec test_mail doveconf -n
+$ docker exec mail doveconf -n
 # 2.2.36 (1f10bfa63): /etc/dovecot/dovecot.conf
 # OS: Linux 4.9.125-linuxkit x86_64 CentOS Linux release 7.4.1708 (Core)  overlay
 # Hostname: 081ec3ead4b7
@@ -90,6 +90,7 @@ userdb {
   driver = passwd-file
 }
 protocol imap {
+  mail_max_userip_connections = 100
   mail_plugins = quota imap_quota
 }
 ~~~
@@ -99,7 +100,7 @@ protocol imap {
 You can see users list via below command:
 
 ~~~bash
-$ docker exec test_mail doveadm quota get -A
+$ docker exec mail doveadm quota get -A
 Username         Quota name Type    Value Limit                %
 sys@example.jp   User quota STORAGE     0 10240                0
 sys@example.jp   User quota MESSAGE     0     -                0
