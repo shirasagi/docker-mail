@@ -27,6 +27,14 @@ Or if you want to access smtp or imap from your host processes, run these comman
 docker run --name mail -d -p 10143:143 -p 10587:587 shirasagi/mail
 ~~~
 
+# UPLOAD
+
+run these commands to upload the new container image to [docker hub](https://hub.docker.com/):
+
+~~~bash
+docker login
+docker push shirasagi/mail
+~~~
 
 # MANAGEMENT
 
