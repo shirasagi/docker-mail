@@ -27,6 +27,29 @@ Or if you want to access smtp or imap from your host processes, run these comman
 docker run --name mail -d -p 10143:143 -p 10587:587 shirasagi/mail
 ~~~
 
+# UPLOAD to GitHub Container Registry
+
+Before you upload your image, you should put a tag to your image.
+
+1. Find the ID for the Docker image you want to tag.
+  ~~~
+  docker images
+  ~~~
+2. Tag your Docker image using the image ID and your desired image name and hosting destination.
+  ~~~
+  docker tag 38f737a91f39 ghcr.io/shirasagi/mail:latest
+  ~~~
+
+Then run these commands to upload the new container image to [GitHub Container Registry](https://github.com/orgs/shirasagi/packages):
+
+~~~bash
+export CR_PAT=YOUR_TOKEN
+echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+docker push ghcr.io/shirasagi/mail
+~~~
+
+YOUR_TOKEN is a personal access token created on the github your account page with "write:packages" scope, and USERNAME is your github account id.
+
 # UPLOAD
 
 run these commands to upload the new container image to [docker hub](https://hub.docker.com/):
