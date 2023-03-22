@@ -70,7 +70,7 @@ $ docker exec mail doveconf -n
 # 2.2.36 (1f10bfa63): /etc/dovecot/dovecot.conf
 # OS: Linux 4.9.125-linuxkit x86_64 CentOS Linux release 7.4.1708 (Core)  overlay
 # Hostname: 081ec3ead4b7
-auth_mechanisms = cram-md5
+auth_mechanisms = plain cram-md5
 first_valid_uid = 1000
 mail_location = maildir:/var/spool/virtual/%d/%n/Maildir
 mail_plugins = quota

@@ -1,11 +1,29 @@
---- 10-auth.conf.orig	2018-05-17 09:09:18.000000000 +0000
-+++ 10-auth.conf	2019-06-18 00:49:33.727401000 +0000
+--- 10-auth.conf.orig	2023-03-22 00:50:16.245822977 +0000
++++ 10-auth.conf	2023-03-22 01:31:36.613853353 +0000
+@@ -7,7 +7,7 @@
+ # matches the local IP (ie. you're connecting from the same computer), the
+ # connection is considered secure and plaintext authentication is allowed.
+ # See also ssl=required setting.
+-#disable_plaintext_auth = yes
++disable_plaintext_auth = no
+ 
+ # Authentication cache size (e.g. 10M). 0 means it's disabled. Note that
+ # bsdauth, PAM and vpopmail require cache_key to be set for caching to be used.
+@@ -30,7 +30,7 @@
+ 
+ # Default realm/domain to use if none was specified. This is used for both
+ # SASL realms and appending @domain to username in plaintext logins.
+-#auth_default_realm = 
++auth_default_realm = example.jp
+ 
+ # List of allowed characters in username. If the user-given username contains
+ # a character not listed in here, the login automatically fails. This is just
 @@ -97,7 +97,7 @@
  #   plain login digest-md5 cram-md5 ntlm rpa apop anonymous gssapi otp skey
  #   gss-spnego
  # NOTE: See also disable_plaintext_auth setting.
 -auth_mechanisms = plain
-+auth_mechanisms = cram-md5
++auth_mechanisms = plain cram-md5
  
  ##
  ## Password and user databases
