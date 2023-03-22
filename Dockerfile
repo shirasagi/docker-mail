@@ -1,4 +1,4 @@
-FROM centos
+FROM centos:7
 LABEL maintainer="NAKANO Hideo <nakano@web-tips.co.jp>"
 
 RUN yum -y install patch postfix dovecot
