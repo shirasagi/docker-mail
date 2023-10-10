@@ -1,0 +1,10 @@
+--- /etc/dovecot/conf.d/auth-ldap.conf.ext.orig 2023-10-10 08:03:51.919846412 +0000
++++ /etc/dovecot/conf.d/auth-ldap.conf.ext      2023-10-10 08:05:26.985458934 +0000
+@@ -22,6 +22,7 @@
+
+   # Default fields can be used to specify defaults that LDAP may override
+   #default_fields = home=/home/virtual/%u
++  default_fields = uid=vmail gid=vmail home=/var/mail/vhosts/%d/%n quota_rule=*:storage=10M
+ }
+
+ # If you don't have any user-specific settings, you can avoid the userdb LDAP

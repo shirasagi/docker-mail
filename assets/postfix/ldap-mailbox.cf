@@ -1,0 +1,10 @@
+server_host = ldap://openldap:389
+search_base = dc=example, dc=jp
+bind = yes
+bind_dn = cn=admin,dc=example,dc=jp
+bind_pw = admin
+scope = sub
+query_filter = (&(objectClass=inetOrgPerson)(|(mail=%s)(uid=%s)))
+result_attribute = uid
+result_format = example.jp/%u/Maildir/
+version = 3

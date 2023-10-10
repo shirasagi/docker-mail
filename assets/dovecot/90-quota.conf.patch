@@ -1,25 +1,24 @@
---- 90-quota.conf.orig	2019-06-18 01:14:29.000000000 +0000
-+++ 90-quota.conf	2019-06-18 01:19:51.358859844 +0000
+--- /etc/dovecot/conf.d/90-quota.conf.orig      2023-10-10 08:01:48.786356937 +0000
++++ /etc/dovecot/conf.d/90-quota.conf   2023-10-10 08:03:11.557257475 +0000
 @@ -17,11 +17,14 @@
  plugin {
    #quota_rule = *:storage=1G
    #quota_rule2 = Trash:storage=+100M
 +  quota_rule = *:storage=10M
 +  quota_rule2 = Trash:storage=+1M
- 
+
    # LDA/LMTP allows saving the last mail to bring user from under quota to
    # over quota, if the quota doesn't grow too high. Default is to allow as
    # long as quota will stay under 10% above the limit. Also allowed e.g. 10M.
    #quota_grace = 10%%
 +  quota_grace = 10%%
- 
+
    # Quota plugin can also limit the maximum accepted mail size.
    #quota_max_mail_size = 100M
-@@ -68,7 +71,7 @@
- 
+@@ -69,6 +72,7 @@
  plugin {
    #quota = dirsize:User quota
--  #quota = maildir:User quota
+   #quota = maildir:User quota
 +  quota = maildir:User quota
    #quota = dict:User quota::proxy::quota
    #quota = fs:User quota

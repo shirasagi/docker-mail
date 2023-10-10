@@ -1,20 +1,8 @@
---- 10-master.conf.orig	2013-03-14 13:28:31.000000000 +0000
-+++ 10-master.conf	2018-05-17 06:41:43.149583756 +0000
-@@ -86,16 +86,18 @@
-   # To give the caller full permissions to lookup all users, set the mode to
-   # something else than 0666 and Dovecot lets the kernel enforce the
-   # permissions (e.g. 0777 allows everyone full permissions).
--  unix_listener auth-userdb {
--    #mode = 0666
--    #user = 
--    #group = 
--  }
-+  #unix_listener auth-userdb {
-+  #  #mode = 0666
-+  #  #user = 
-+  #  #group = 
-+  #}
- 
+--- /etc/dovecot/conf.d/10-master.conf.orig     2023-10-10 07:58:48.431321199 +0000
++++ /etc/dovecot/conf.d/10-master.conf  2023-10-10 08:00:12.199833172 +0000
+@@ -104,9 +104,11 @@
+   }
+
    # Postfix smtp-auth
 -  #unix_listener /var/spool/postfix/private/auth {
 -  #  mode = 0666
@@ -24,6 +12,6 @@
 +    user = postfix
 +    group = postfix
 +  }
- 
+
    # Auth process is run as this user.
    #user = $default_internal_user

@@ -1,0 +1,18 @@
+uris = ldap://openldap:389
+# admin user dn
+dn = cn=admin,dc=example,dc=jp
+dnpass = admin
+# auth_bind
+auth_bind = no
+# suffix(base dn)
+base = dc=example,dc=jp
+# user
+user_attrs = mail=user,userPassword=password
+user_filter = (&(objectClass=inetOrgPerson)(|(mail=%u)(uid=%u)))
+# pass
+pass_attrs = mail=user,userPassword=password
+pass_filter = (&(objectClass=inetOrgPerson)(|(mail=%u)(uid=%u)))
+default_pass_scheme = PLAIN
+# iterator
+iterate_attrs = mail=user
+iterate_filter = (objectClass=inetOrgPerson)

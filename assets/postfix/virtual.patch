@@ -1,0 +1,13 @@
+--- /etc/postfix/virtual.orig   2023-10-10 06:48:31.034888240 +0000
++++ /etc/postfix/virtual        2023-10-10 06:49:43.366255196 +0000
+@@ -297,3 +297,10 @@
+ #        Yorktown Heights, NY 10598, USA
+ #
+ #                                                                     VIRTUAL(5)
++virtual_uid_maps = static:5000
++virtual_gid_maps = static:5000
++virtual_minimum_uid = 100
++virtual_alias_maps = ldap:/etc/postfix/ldap-alias.cf
++virtual_mailbox_domains = example.jp
++virtual_mailbox_base = /var/mail/vhosts
++virtual_mailbox_maps = ldap:/etc/postfix/ldap-mailbox.cf

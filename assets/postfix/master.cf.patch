@@ -1,6 +1,6 @@
---- master.cf.orig	2014-06-10 10:39:23.000000000 +0900
-+++ master.cf	2017-10-17 20:32:20.048020986 +0900
-@@ -13,7 +13,7 @@
+--- /etc/postfix/master.cf.orig 2023-10-10 07:34:26.764111428 +0000
++++ /etc/postfix/master.cf      2023-10-10 07:35:02.299323101 +0000
+@@ -14,7 +14,7 @@
  #smtpd     pass  -       -       n       -       -       smtpd
  #dnsblog   unix  -       -       n       -       0       dnsblog
  #tlsproxy  unix  -       -       n       -       0       tlsproxy

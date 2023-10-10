@@ -1,77 +1,160 @@
---- main.cf.orig	2014-06-10 10:39:24.000000000 +0900
-+++ main.cf	2017-10-25 11:29:54.711718567 +0900
-@@ -74,6 +74,7 @@
+--- /etc/postfix/main.cf.orig   2023-10-10 07:35:20.699205340 +0000
++++ /etc/postfix/main.cf        2023-10-10 09:14:03.415817099 +0000
+@@ -93,6 +93,7 @@
  #
  #myhostname = host.domain.tld
  #myhostname = virtual.domain.tld
-+myhostname = ss001.example.jp
- 
++myhostname = mail.example.jp
+
  # The mydomain parameter specifies the local internet domain name.
  # The default is to use $myhostname minus the first component.
-@@ -81,6 +82,7 @@
+@@ -100,6 +101,7 @@
  # parameters.
  #
  #mydomain = domain.tld
 +mydomain = example.jp
- 
+
  # SENDING MAIL
- # 
-@@ -97,6 +99,7 @@
+ #
+@@ -116,6 +118,7 @@
  #
  #myorigin = $myhostname
  #myorigin = $mydomain
 +myorigin = $mydomain
- 
+
  # RECEIVING MAIL
- 
-@@ -113,7 +116,8 @@
+
+@@ -132,10 +135,12 @@
  #inet_interfaces = all
  #inet_interfaces = $myhostname
  #inet_interfaces = $myhostname, localhost
 -inet_interfaces = localhost
 +#inet_interfaces = localhost
 +inet_interfaces = all
- 
+
  # Enable IPv4, and IPv6 if supported
- inet_protocols = all
-@@ -249,6 +253,7 @@
+-inet_protocols = all
++#inet_protocols = all
++inet_protocols = ipv4
+
+ # The proxy_interfaces parameter specifies the network interface
+ # addresses that this mail system receives mail on by way of a
+@@ -180,10 +185,11 @@
+ #
+ # See also below, section "REJECTING MAIL FOR UNKNOWN LOCAL USERS".
+ #
+-mydestination = $myhostname, localhost.$mydomain, localhost
++#mydestination = $myhostname, localhost.$mydomain, localhost
+ #mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+ #mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain,
+ #      mail.$mydomain, www.$mydomain, ftp.$mydomain
++mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+
+ # REJECTING MAIL FOR UNKNOWN LOCAL USERS
+ #
+@@ -226,7 +232,7 @@
+ #
+ #local_recipient_maps = unix:passwd.byname $alias_maps
+ #local_recipient_maps = proxy:unix:passwd.byname $alias_maps
+-#local_recipient_maps =
++local_recipient_maps =
+
+ # The unknown_local_recipient_reject_code specifies the SMTP server
+ # response code when a recipient domain matches $mydestination or
+@@ -268,6 +274,7 @@
  #mynetworks_style = class
  #mynetworks_style = subnet
  #mynetworks_style = host
 +mynetworks_style = subnet
- 
+
  # Alternatively, you can specify the mynetworks list by hand, in
  # which case Postfix ignores the mynetworks_style setting.
-@@ -417,6 +422,7 @@
+@@ -402,7 +409,7 @@
+ # "postfix reload" to eliminate the delay.
+ #
+ #alias_maps = dbm:/etc/aliases
+-alias_maps = hash:/etc/aliases
++#alias_maps = hash:/etc/aliases
+ #alias_maps = hash:/etc/aliases, nis:mail.aliases
+ #alias_maps = netinfo:/aliases
+
+@@ -436,6 +443,7 @@
  #
  #home_mailbox = Mailbox
  #home_mailbox = Maildir/
 +home_mailbox = Maildir/
-  
+
  # The mail_spool_directory parameter specifies the directory where
  # UNIX-style mailboxes are kept. The default setting depends on the
-@@ -545,7 +551,7 @@
- #
+@@ -565,6 +573,7 @@
  # For details, see "man header_checks".
  #
--#header_checks = regexp:/etc/postfix/header_checks
+ #header_checks = regexp:/etc/postfix/header_checks
 +header_checks = regexp:/etc/postfix/header_checks
- 
+
  # FAST ETRN SERVICE
  #
-@@ -677,3 +683,17 @@
- # readme_directory: The location of the Postfix README files.
+@@ -614,7 +623,7 @@
+ # logging level when an SMTP client or server host name or address
+ # matches a pattern in the debug_peer_list parameter.
  #
- readme_directory = /usr/share/doc/postfix-2.10.1/README_FILES
+-debug_peer_level = 2
++debug_peer_level = 3
+
+ # The debug_peer_list parameter specifies an optional list of domain
+ # or network patterns, /file/name patterns or type:name tables. When
+@@ -624,6 +633,7 @@
+ #
+ #debug_peer_list = 127.0.0.1
+ #debug_peer_list = some.domain
++debug_peer_list = 172.18.0.0/24
+
+ # The debugger_command specifies the external command that is executed
+ # when a Postfix daemon program is run with the -D option.
+@@ -706,33 +716,42 @@
+ # in PEM format. Intermediate certificates should be included in general,
+ # the server certificate first, then the issuing CA(s) (bottom-up order).
+ #
+-smtpd_tls_cert_file = /etc/pki/tls/certs/postfix.pem
++#smtpd_tls_cert_file = /etc/pki/tls/certs/postfix.pem
+
+ # The full pathname of a file with the Postfix SMTP server RSA private key
+ # in PEM format. The private key must be accessible without a pass-phrase,
+ # i.e. it must not be encrypted.
+ #
+-smtpd_tls_key_file = /etc/pki/tls/private/postfix.key
++#smtpd_tls_key_file = /etc/pki/tls/private/postfix.key
+
+ # Announce STARTTLS support to remote SMTP clients, but do not require that
+ # clients use TLS encryption (opportunistic TLS inbound).
+ #
+-smtpd_tls_security_level = may
++#smtpd_tls_security_level = may
+
+ # Directory with PEM format Certification Authority certificates that the
+ # Postfix SMTP client uses to verify a remote SMTP server certificate.
+ #
+-smtp_tls_CApath = /etc/pki/tls/certs
++#smtp_tls_CApath = /etc/pki/tls/certs
+
+ # The full pathname of a file containing CA certificates of root CAs
+ # trusted to sign either remote SMTP server certificates or intermediate CA
+ # certificates.
+ #
+-smtp_tls_CAfile = /etc/pki/tls/certs/ca-bundle.crt
++#smtp_tls_CAfile = /etc/pki/tls/certs/ca-bundle.crt
+
+ # Use TLS if this is supported by the remote SMTP server, otherwise use
+ # plaintext (opportunistic TLS outbound).
+ #
+-smtp_tls_security_level = may
++#smtp_tls_security_level = may
++smtp_tls_security_level = none
+ meta_directory = /etc/postfix
+ shlib_directory = /usr/lib64/postfix
 +
-+#
-+virtual_mailbox_domains = example.jp
-+virtual_mailbox_base = /var/spool/virtual
-+virtual_mailbox_maps = hash:/etc/postfix/vmailbox
-+virtual_uid_maps = static:10000
-+virtual_gid_maps = static:10000
++maillog_file = /dev/stdout
 +
-+#
 +smtpd_sasl_auth_enable = yes
 +smtpd_sasl_type = dovecot
 +smtpd_sasl_path = private/auth

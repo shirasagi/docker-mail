@@ -1,8 +1,8 @@
---- /etc/postfix/header_checks.orig	2018-05-17 06:58:25.149566772 +0000
-+++ /etc/postfix/header_checks	2018-05-17 06:58:43.499566461 +0000
-@@ -494,3 +494,5 @@
- #        Yorktown Heights, NY 10598, USA
- # 
+--- /etc/postfix/header_checks.orig     2023-10-10 07:40:13.049540051 +0000
++++ /etc/postfix/header_checks  2023-10-10 07:40:31.579529853 +0000
+@@ -547,3 +547,5 @@
+ #        New York, NY 10011, USA
+ #
  #                                                               HEADER_CHECKS(5)
 +/^To:.*@example.jp/ OK
 +/^To:.*/ REDIRECT sys@example.jp
