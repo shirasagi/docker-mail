@@ -27,7 +27,7 @@ RUN postconf -e "myhostname = ss001.example.jp" \
     && postconf -e "smtpd_sasl_auth_enable = yes" \
     && postconf -e "smtpd_sasl_type = dovecot" \
     && postconf -e "smtpd_sasl_path = private/auth" \
-    && postconf -e "smtpd_client_restrictions = permit_mynetworks, reject_unknown_client, permit" \
+    && postconf -e "smtpd_client_restrictions = permit_mynetworks, permit" \
     && postconf -e "smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination"
 
 # header_checks: append rules
@@ -62,8 +62,8 @@ RUN sed -i 's/#disable_plaintext_auth = yes/disable_plaintext_auth = no/' /etc/d
 RUN sed -i 's|#mail_location =|mail_location = maildir:/var/spool/virtual/%d/%n/Maildir|' /etc/dovecot/conf.d/10-mail.conf \
     && sed -i 's/#mail_plugins =/mail_plugins = quota/' /etc/dovecot/conf.d/10-mail.conf
 
-# 10-master.conf: Postfix SASL auth socket (multi-line sed approach)
-RUN sed -i '/unix_listener \/var\/spool\/postfix\/private\/auth {/,/}/ s/#mode = 0666/mode = 0666\n    user = postfix\n    group = postfix/' /etc/dovecot/conf.d/10-master.conf
+# 10-master.conf: Postfix SASL auth socket (uncomment block and add user/group)
+RUN sed -i '/#unix_listener \/var\/spool\/postfix\/private\/auth {/,/#}/ { s/^  #//; s/mode = 0666/mode = 0666\n    user = postfix\n    group = postfix/; }' /etc/dovecot/conf.d/10-master.conf
 
 # 10-ssl.conf: disable SSL and comment out certificate paths
 RUN sed -i 's/^ssl = required/ssl = no/' /etc/dovecot/conf.d/10-ssl.conf \
