@@ -1,65 +1,88 @@
-FROM centos:7
+FROM almalinux:8
 LABEL maintainer="NAKANO Hideo <nakano@web-tips.co.jp>"
 
-RUN yum -y install patch postfix dovecot
+# Install packages
+RUN dnf -y install postfix dovecot && dnf clean all
 
 #
 # setup postfix
 #
-ADD ./assets/postfix/master.cf.patch /tmp/master.cf.patch
-RUN cp -n /etc/postfix/master.cf /etc/postfix/master.cf.orig
-RUN patch /etc/postfix/master.cf < /tmp/master.cf.patch
 
-ADD ./assets/postfix/main.cf.patch /tmp/main.cf.patch
-RUN cp -n /etc/postfix/main.cf /etc/postfix/main.cf.orig
-RUN patch /etc/postfix/main.cf < /tmp/main.cf.patch
+# master.cf: enable submission port
+RUN sed -i 's/^#submission/submission/' /etc/postfix/master.cf
 
-ADD ./assets/postfix/header_checks.patch /tmp/header_checks.patch
-RUN cp -n /etc/postfix/header_checks /etc/postfix/header_checks.orig
-RUN patch /etc/postfix/header_checks < /tmp/header_checks.patch
+# main.cf: apply settings using postconf
+RUN postconf -e "myhostname = ss001.example.jp" \
+    && postconf -e "mydomain = example.jp" \
+    && postconf -e "myorigin = \$mydomain" \
+    && postconf -e "inet_interfaces = all" \
+    && postconf -e "mynetworks_style = subnet" \
+    && postconf -e "home_mailbox = Maildir/" \
+    && postconf -e "header_checks = regexp:/etc/postfix/header_checks" \
+    && postconf -e "virtual_mailbox_domains = example.jp" \
+    && postconf -e "virtual_mailbox_base = /var/spool/virtual" \
+    && postconf -e "virtual_mailbox_maps = hash:/etc/postfix/vmailbox" \
+    && postconf -e "virtual_uid_maps = static:10000" \
+    && postconf -e "virtual_gid_maps = static:10000" \
+    && postconf -e "smtpd_sasl_auth_enable = yes" \
+    && postconf -e "smtpd_sasl_type = dovecot" \
+    && postconf -e "smtpd_sasl_path = private/auth" \
+    && postconf -e "smtpd_client_restrictions = permit_mynetworks, reject_unknown_client, permit" \
+    && postconf -e "smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination"
 
-RUN groupadd -g 10000 mailuser
-RUN useradd -u 10000 -g mailuser -s /sbin/nologin mailuser
-RUN mkdir /var/spool/virtual
-RUN chown -R mailuser:mailuser /var/spool/virtual
+# header_checks: append rules
+RUN printf "/^To:.*@example.jp/ OK\n/^To:.*/ REDIRECT sys@example.jp\n" >> /etc/postfix/header_checks
 
+# Create mailuser and directory
+RUN groupadd -g 10000 mailuser \
+    && useradd -u 10000 -g mailuser -s /sbin/nologin mailuser \
+    && mkdir -p /var/spool/virtual \
+    && chown -R mailuser:mailuser /var/spool/virtual
+
+# vmailbox setup
 ADD ./assets/postfix/vmailbox /etc/postfix/vmailbox
 RUN postmap /etc/postfix/vmailbox
 
-RUN /usr/libexec/postfix/aliasesdb
-RUN /usr/libexec/postfix/chroot-update
+# update aliases and chroot
+RUN /usr/libexec/postfix/aliasesdb \
+    && /usr/libexec/postfix/chroot-update
 
 #
 # setup dovecot
 #
-ADD ./assets/dovecot/10-auth.conf.patch /tmp/10-auth.conf.patch
-RUN cp -n /etc/dovecot/conf.d/10-auth.conf /etc/dovecot/conf.d/10-auth.conf.orig
-RUN patch /etc/dovecot/conf.d/10-auth.conf < /tmp/10-auth.conf.patch
 
-ADD ./assets/dovecot/10-mail.conf.patch /tmp/10-mail.conf.patch
-RUN cp -n /etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf.orig
-RUN patch /etc/dovecot/conf.d/10-mail.conf < /tmp/10-mail.conf.patch
+# 10-auth.conf: enable plaintext, domain, mechanisms, and passwd-file
+RUN sed -i 's/#disable_plaintext_auth = yes/disable_plaintext_auth = no/' /etc/dovecot/conf.d/10-auth.conf \
+    && sed -i 's/#auth_default_realm =/auth_default_realm = example.jp/' /etc/dovecot/conf.d/10-auth.conf \
+    && sed -i 's/auth_mechanisms = plain/auth_mechanisms = plain cram-md5/' /etc/dovecot/conf.d/10-auth.conf \
+    && sed -i 's/^!include auth-system.conf.ext/#!include auth-system.conf.ext/' /etc/dovecot/conf.d/10-auth.conf \
+    && sed -i 's/#!include auth-passwdfile.conf.ext/!include auth-passwdfile.conf.ext/' /etc/dovecot/conf.d/10-auth.conf
 
-ADD ./assets/dovecot/10-master.conf.patch /tmp/10-master.conf.patch
-RUN cp -n /etc/dovecot/conf.d/10-master.conf /etc/dovecot/conf.d/10-master.conf.orig
-RUN patch /etc/dovecot/conf.d/10-master.conf < /tmp/10-master.conf.patch
+# 10-mail.conf: mail location and quota plugin
+RUN sed -i 's|#mail_location =|mail_location = maildir:/var/spool/virtual/%d/%n/Maildir|' /etc/dovecot/conf.d/10-mail.conf \
+    && sed -i 's/#mail_plugins =/mail_plugins = quota/' /etc/dovecot/conf.d/10-mail.conf
 
-ADD ./assets/dovecot/10-ssl.conf.patch /tmp/10-ssl.conf.patch
-RUN cp -n /etc/dovecot/conf.d/10-ssl.conf /etc/dovecot/conf.d/10-ssl.conf.orig
-RUN patch /etc/dovecot/conf.d/10-ssl.conf < /tmp/10-ssl.conf.patch
+# 10-master.conf: Postfix SASL auth socket (multi-line sed approach)
+RUN sed -i '/unix_listener \/var\/spool\/postfix\/private\/auth {/,/}/ s/#mode = 0666/mode = 0666\n    user = postfix\n    group = postfix/' /etc/dovecot/conf.d/10-master.conf
 
-ADD ./assets/dovecot/20-imap.conf.patch /tmp/20-imap.conf.patch
-RUN cp -n /etc/dovecot/conf.d/20-imap.conf /etc/dovecot/conf.d/20-imap.conf.orig
-RUN patch /etc/dovecot/conf.d/20-imap.conf < /tmp/20-imap.conf.patch
+# 10-ssl.conf: disable SSL and comment out certificate paths
+RUN sed -i 's/^ssl = required/ssl = no/' /etc/dovecot/conf.d/10-ssl.conf \
+    && sed -i 's/^ssl_cert =/#ssl_cert =/' /etc/dovecot/conf.d/10-ssl.conf \
+    && sed -i 's/^ssl_key =/#ssl_key =/' /etc/dovecot/conf.d/10-ssl.conf
 
-ADD ./assets/dovecot/90-quota.conf.patch /tmp/90-quota.conf.patch
-RUN cp -n /etc/dovecot/conf.d/90-quota.conf /etc/dovecot/conf.d/90-quota.conf.orig
-RUN patch /etc/dovecot/conf.d/90-quota.conf < /tmp/90-quota.conf.patch
+# 20-imap.conf: imap_quota plugin and connection limit
+RUN sed -i 's/#mail_plugins = $mail_plugins/mail_plugins = $mail_plugins imap_quota/' /etc/dovecot/conf.d/20-imap.conf \
+    && sed -i 's/#mail_max_userip_connections = 10/mail_max_userip_connections = 100/' /etc/dovecot/conf.d/20-imap.conf
 
-ADD ./assets/dovecot/auth-passwdfile.conf.ext.patch /tmp/auth-passwdfile.conf.ext.patch
-RUN cp -n /etc/dovecot/conf.d/auth-passwdfile.conf.ext /etc/dovecot/conf.d/auth-passwdfile.conf.ext.orig
-RUN patch /etc/dovecot/conf.d/auth-passwdfile.conf.ext < /tmp/auth-passwdfile.conf.ext.patch
+# 90-quota.conf: quota rules and backend
+RUN sed -i 's/#quota_rule = \*:storage=1G/quota_rule = *:storage=10M/' /etc/dovecot/conf.d/90-quota.conf \
+    && sed -i 's/#quota_rule2 = Trash:storage=+100M/quota_rule2 = Trash:storage=+1M/' /etc/dovecot/conf.d/90-quota.conf \
+    && sed -i 's/#quota = maildir:User quota/quota = maildir:User quota/' /etc/dovecot/conf.d/90-quota.conf
 
+# auth-passwdfile.conf.ext: default fields
+RUN sed -i 's|#default_fields =|default_fields = uid=mailuser gid=mailuser home=/var/spool/virtual/%d/%n|' /etc/dovecot/conf.d/auth-passwdfile.conf.ext
+
+# Copy users list
 ADD ./assets/dovecot/users /etc/dovecot/users
 
 # EXPOSE 25
