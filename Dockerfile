@@ -1,8 +1,12 @@
 FROM almalinux:8
 LABEL maintainer="NAKANO Hideo <nakano@web-tips.co.jp>"
 
+RUN echo "alias ll='ls -al'" >> ~/.bashrc
+
 # Install packages
-RUN dnf -y install postfix dovecot && dnf clean all
+RUN dnf -y install procps
+RUN dnf -y install postfix dovecot
+RUN dnf clean all
 
 #
 # setup postfix
