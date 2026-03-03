@@ -1,0 +1,79 @@
+--- main.cf.orig	2014-06-10 10:39:24.000000000 +0900
++++ main.cf	2017-10-25 11:29:54.711718567 +0900
+@@ -74,6 +74,7 @@
+ #
+ #myhostname = host.domain.tld
+ #myhostname = virtual.domain.tld
++myhostname = ss001.example.jp
+ 
+ # The mydomain parameter specifies the local internet domain name.
+ # The default is to use $myhostname minus the first component.
+@@ -81,6 +82,7 @@
+ # parameters.
+ #
+ #mydomain = domain.tld
++mydomain = example.jp
+ 
+ # SENDING MAIL
+ # 
+@@ -97,6 +99,7 @@
+ #
+ #myorigin = $myhostname
+ #myorigin = $mydomain
++myorigin = $mydomain
+ 
+ # RECEIVING MAIL
+ 
+@@ -113,7 +116,8 @@
+ #inet_interfaces = all
+ #inet_interfaces = $myhostname
+ #inet_interfaces = $myhostname, localhost
+-inet_interfaces = localhost
++#inet_interfaces = localhost
++inet_interfaces = all
+ 
+ # Enable IPv4, and IPv6 if supported
+ inet_protocols = all
+@@ -249,6 +253,7 @@
+ #mynetworks_style = class
+ #mynetworks_style = subnet
+ #mynetworks_style = host
++mynetworks_style = subnet
+ 
+ # Alternatively, you can specify the mynetworks list by hand, in
+ # which case Postfix ignores the mynetworks_style setting.
+@@ -417,6 +422,7 @@
+ #
+ #home_mailbox = Mailbox
+ #home_mailbox = Maildir/
++home_mailbox = Maildir/
+  
+ # The mail_spool_directory parameter specifies the directory where
+ # UNIX-style mailboxes are kept. The default setting depends on the
+@@ -545,7 +551,7 @@
+ #
+ # For details, see "man header_checks".
+ #
+-#header_checks = regexp:/etc/postfix/header_checks
++header_checks = regexp:/etc/postfix/header_checks
+ 
+ # FAST ETRN SERVICE
+ #
+@@ -677,3 +683,17 @@
+ # readme_directory: The location of the Postfix README files.
+ #
+ readme_directory = /usr/share/doc/postfix-2.10.1/README_FILES
++
++#
++virtual_mailbox_domains = example.jp
++virtual_mailbox_base = /var/spool/virtual
++virtual_mailbox_maps = hash:/etc/postfix/vmailbox
++virtual_uid_maps = static:10000
++virtual_gid_maps = static:10000
++
++#
++smtpd_sasl_auth_enable = yes
++smtpd_sasl_type = dovecot
++smtpd_sasl_path = private/auth
++smtpd_client_restrictions = permit_mynetworks, reject_unknown_client, permit
++smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
