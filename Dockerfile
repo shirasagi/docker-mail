@@ -87,10 +87,10 @@ RUN sed -i 's/#quota_rule = \*:storage=1G/quota_rule = *:storage=10M/' /etc/dove
 RUN sed -i 's|#default_fields =|default_fields = uid=mailuser gid=mailuser home=/var/spool/virtual/%d/%n|' /etc/dovecot/conf.d/auth-passwdfile.conf.ext
 
 # rsyslog setup: use minimal config
-ADD rsyslog.conf /etc/rsyslog.conf
+ADD ./assets/rsyslog.conf /etc/rsyslog.conf
 
 # Add entrypoint script
-ADD entrypoint.sh /entrypoint.sh
+ADD ./assets/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Copy users list
