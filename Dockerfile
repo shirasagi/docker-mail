@@ -4,7 +4,7 @@ LABEL maintainer="NAKANO Hideo <nakano@web-tips.co.jp>"
 RUN echo "alias ll='ls -al'" >> ~/.bashrc
 
 # Install packages
-RUN dnf -y install procps
+RUN dnf -y install procps rsyslog
 RUN dnf -y install postfix dovecot
 RUN dnf clean all
 
@@ -86,6 +86,13 @@ RUN sed -i 's/#quota_rule = \*:storage=1G/quota_rule = *:storage=10M/' /etc/dove
 # auth-passwdfile.conf.ext: default fields
 RUN sed -i 's|#default_fields =|default_fields = uid=mailuser gid=mailuser home=/var/spool/virtual/%d/%n|' /etc/dovecot/conf.d/auth-passwdfile.conf.ext
 
+# rsyslog setup: use minimal config
+ADD rsyslog.conf /etc/rsyslog.conf
+
+# Add entrypoint script
+ADD entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Copy users list
 ADD ./assets/dovecot/users /etc/dovecot/users
 
@@ -93,4 +100,4 @@ ADD ./assets/dovecot/users /etc/dovecot/users
 EXPOSE 143
 EXPOSE 587
 
-CMD /usr/sbin/postfix start && /usr/sbin/dovecot -F
+CMD ["/entrypoint.sh"]

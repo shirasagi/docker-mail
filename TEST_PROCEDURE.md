@@ -1,48 +1,80 @@
 # メールサーバー動作確認手順 (AlmaLinux 8)
 
-このドキュメントでは、構築した AlmaLinux 8 ベースのメールサーバーコンテナの動作確認手順を記録します。
+このドキュメントでは、AlmaLinux 8 ベースのメールサーバーコンテナの動作確認手順を説明します。
+ホストマシンから SMTP (Postfix) および IMAP (Dovecot) の動作を検証します。
 
-## 1. コンテナの起動
-以下のコマンドでコンテナを起動します。
+## 1. コンテナのビルドと起動
 
-```bash
-docker run -d --name mailserver -p 587:587 -p 143:143 docker-mail-almalinux
-```
-
-## 2. メールの送信テスト (SMTP / Postfix)
-コンテナ内の `sendmail` コマンドを使用して、仮想メールボックスへの配送をテストします。
+まず、最新のイメージをビルドしてコンテナを起動します。
 
 ```bash
-docker exec mailserver /usr/sbin/sendmail -f user1@example.jp user1@example.jp <<EOF
-Subject: Test Mail
-From: user1@example.jp
-To: user1@example.jp
+# ビルド
+docker build -t shirasagi/mail .
 
-This is a test message.
-EOF
+# 起動 (ホストの 10587, 10143 ポートを使用)
+docker run --name mail -d -p 10143:143 -p 10587:587 shirasagi/mail
 ```
 
-### 配送結果の確認
-コンテナ内のディレクトリ構造を確認します。
-```bash
-docker exec mailserver ls -R /var/spool/virtual/example.jp/user1/Maildir/new
-```
+## 2. SMTP 送信テスト (Postfix)
 
-## 3. メールの受信確認 (IMAP / Dovecot)
-ホストマシンから `nc` (Netcat) を使用して、IMAP ポート (143) 経由でログインとメールの存在を確認します。
+ホストマシンから `swaks` を使用して、コンテナ内の Postfix にメールを送信します。
 
-- **ユーザー**: `user1@example.jp`
-- **パスワード**: `pass`
+- **送信元/宛先**: `user1@example.jp`
+- **サーバー**: `localhost:10587`
+- **認証**: パスワード `pass` (PLAIN 認証)
 
 ```bash
-printf "a1 LOGIN user1@example.jp pass
-a2 SELECT INBOX
-a3 FETCH 1 BODY[TEXT]
-a4 LOGOUT
-" | nc localhost 143
+swaks --to user1@example.jp --from user1@example.jp \
+      --server localhost --port 10587 \
+      --auth PLAIN --auth-user user1@example.jp --auth-password pass \
+      --body "This is a test mail from swaks." \
+      --header "Subject: Test Mail from Swaks"
 ```
 
-### 期待される応答
-- `a1 OK ... Logged in`
-- `* 1 EXISTS` (メールが1通存在することを示す)
-- `a2 OK [READ-WRITE] Select completed`
+### ログによる配送確認
+コンテナのログを表示して、Postfix がメールを受理し、正常に Maildir へ配信したことを確認します。
+
+```bash
+docker logs mail
+```
+
+**期待されるログ出力例:**
+```text
+postfix/smtpd[...]: connect from unknown[...]
+postfix/smtpd[...]: ...: client=unknown[...]
+postfix/virtual[...]: ...: to=<user1@example.jp>, relay=virtual, ..., status=sent (delivered to maildir)
+```
+
+## 3. メールの受信確認 (Dovecot / IMAP)
+
+### ディレクトリの直接確認
+Maildir 内に新しいメールファイルが作成されているか確認します。
+
+```bash
+docker exec mail ls -R /var/spool/virtual/example.jp/user1/Maildir/new/
+```
+
+### IMAP 経由での確認
+ホストマシンから `curl` または `nc` を使用して IMAP 接続をテストします。
+
+**curl を使用する場合:**
+```bash
+curl -u user1@example.jp:pass imap://localhost:10143/INBOX
+```
+
+**nc (Netcat) を使用する場合:**
+```bash
+printf "A1 LOGIN user1@example.jp pass\nA2 SELECT INBOX\nA3 LOGOUT\n" | nc localhost 10143
+```
+
+**期待される応答:**
+- `* 1 EXISTS` (メールが届いている場合、通数が表示されます)
+- `A1 OK ... Logged in`
+
+## 4. クォータの確認 (任意)
+
+Dovecot のクォータ機能が動作しているか確認します。
+
+```bash
+docker exec mail doveadm quota get -u user1@example.jp
+```
