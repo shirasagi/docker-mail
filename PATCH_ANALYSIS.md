@@ -50,6 +50,7 @@ Postfix のメイン設定ファイルに対する変更です。
 
 ### 10-master.conf.patch
 - **Postfix SASL認証用ソケット**: `/var/spool/postfix/private/auth` を作成。所有者を `postfix` ユーザー/グループに設定し、モード `0666` で開放。
+- **auth-userdb**: デフォルトの `auth-userdb` 設定をコメントアウト。
 
 ### 10-ssl.conf.patch
 - **SSL無効化**: `ssl = no` に設定。
