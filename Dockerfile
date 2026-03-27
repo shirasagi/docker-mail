@@ -1,7 +1,9 @@
-FROM centos:7
+FROM almalinux:9
 LABEL maintainer="NAKANO Hideo <nakano@web-tips.co.jp>"
 
-RUN yum -y install patch postfix dovecot
+RUN echo "alias ll='ls -al'" >> ~/.bashrc
+RUN dnf -y install procps patch
+RUN dnf -y install postfix dovecot
 
 #
 # setup postfix

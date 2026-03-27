@@ -1,6 +1,6 @@
---- 10-master.conf.orig	2013-03-14 13:28:31.000000000 +0000
-+++ 10-master.conf	2018-05-17 06:41:43.149583756 +0000
-@@ -86,16 +86,18 @@
+--- 10-master.conf.orig	2026-03-27 01:45:32.000000000 +0000
++++ 10-master.conf	2026-03-27 02:04:06.705650011 +0000
+@@ -97,16 +97,21 @@
    # To give the caller full permissions to lookup all users, set the mode to
    # something else than 0666 and Dovecot lets the kernel enforce the
    # permissions (e.g. 0777 allows everyone full permissions).
@@ -16,9 +16,9 @@
 +  #}
  
    # Postfix smtp-auth
--  #unix_listener /var/spool/postfix/private/auth {
--  #  mode = 0666
--  #}
+   #unix_listener /var/spool/postfix/private/auth {
+   #  mode = 0666
+   #}
 +  unix_listener /var/spool/postfix/private/auth {
 +    mode = 0666
 +    user = postfix
