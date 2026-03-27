@@ -754,7 +754,7 @@ virtual_gid_maps = static:10000
 smtpd_sasl_auth_enable = yes
 smtpd_sasl_type = dovecot
 smtpd_sasl_path = private/auth
-smtpd_client_restrictions = permit_mynetworks, reject_unknown_client, permit
+smtpd_client_restrictions = permit_mynetworks, permit
 smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
 
 #

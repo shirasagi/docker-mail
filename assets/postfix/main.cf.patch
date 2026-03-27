@@ -1,5 +1,5 @@
---- main.cf.orig	2026-03-27 02:29:07.000000000 +0000
-+++ main.cf	2026-03-27 02:53:58.981093007 +0000
+--- main.cf.orig	2026-03-27 02:55:30.000000000 +0000
++++ main.cf	2026-03-27 02:59:24.966554005 +0000
 @@ -85,7 +85,7 @@
  #default_privs = nobody
  
@@ -259,7 +259,7 @@
 +smtpd_sasl_auth_enable = yes
 +smtpd_sasl_type = dovecot
 +smtpd_sasl_path = private/auth
-+smtpd_client_restrictions = permit_mynetworks, reject_unknown_client, permit
++smtpd_client_restrictions = permit_mynetworks, permit
 +smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
 +
 +#
