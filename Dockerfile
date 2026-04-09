@@ -1,7 +1,9 @@
-FROM centos:7
+FROM almalinux:9
 LABEL maintainer="NAKANO Hideo <nakano@web-tips.co.jp>"
 
-RUN yum -y install patch postfix dovecot
+RUN echo "alias ll='ls -al'" >> ~/.bashrc
+RUN dnf -y install procps patch
+RUN dnf -y install postfix dovecot
 
 #
 # setup postfix
@@ -60,10 +62,18 @@ ADD ./assets/dovecot/auth-passwdfile.conf.ext.patch /tmp/auth-passwdfile.conf.ex
 RUN cp -n /etc/dovecot/conf.d/auth-passwdfile.conf.ext /etc/dovecot/conf.d/auth-passwdfile.conf.ext.orig
 RUN patch /etc/dovecot/conf.d/auth-passwdfile.conf.ext < /tmp/auth-passwdfile.conf.ext.patch
 
+ADD ./assets/dovecot/10-logging.conf.patch /tmp/10-logging.conf.patch
+RUN cp -n /etc/dovecot/conf.d/10-logging.conf /etc/dovecot/conf.d/10-logging.conf.orig
+RUN patch /etc/dovecot/conf.d/10-logging.conf < /tmp/10-logging.conf.patch
+
 ADD ./assets/dovecot/users /etc/dovecot/users
+
+# Add entrypoint script
+ADD ./assets/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # EXPOSE 25
 EXPOSE 143
 EXPOSE 587
 
-CMD /usr/sbin/postfix start && /usr/sbin/dovecot -F
+CMD ["/entrypoint.sh"]
